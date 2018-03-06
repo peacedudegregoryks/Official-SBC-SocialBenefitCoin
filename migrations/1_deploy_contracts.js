@@ -1,5 +1,5 @@
 var SBCoin = artifacts.require('./SBCoin.sol');
-var SBCDistribution = artifacts.require('./PolyDistribution.sol');
+var SBCDistribution = artifacts.require('./SBCDistribution.sol');
 
 module.exports = async (deployer, network) => {
   let _now = Date.now();
@@ -8,7 +8,7 @@ module.exports = async (deployer, network) => {
   await deployer.deploy(SBCDistribution, _startTime);
   console.log(`
     ---------------------------------------------------------------
-    --------- POLYMATH (POLY) TOKEN SUCCESSFULLY DEPLOYED ---------
+    ----- SOCIAL BENEFIT COIN (SBC) SUCCESSFULLY DEPLOYED ---------
     ---------------------------------------------------------------
     - Contract address: ${SBCDistribution.address}
     - Distribution starts in: ${_fromNow/1000/60} minutes
