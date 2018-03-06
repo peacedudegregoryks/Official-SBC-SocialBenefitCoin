@@ -1,2 +1,1 @@
-# officialsocialbenefitcoin
-Official Social Benefit Coin Repository
+# Social Benefit Coin (SBC)
