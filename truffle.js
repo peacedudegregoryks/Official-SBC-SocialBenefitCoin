@@ -1,5 +1,5 @@
 require('babel-register');
-require('babel-polyfill');
+require('babel-sbcfill');
 
 module.exports = {
   networks: {
