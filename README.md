@@ -1,1 +1,1 @@
-# Social Benefit Coin (SBC)
+# Official Social Benefit Coin (SBC)
