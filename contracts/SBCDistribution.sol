@@ -1,14 +1,14 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
-import './interfaces/IERC20.sol';
+import './interfaces/ERC20.sol';
 import './SBCoin.sol';
 import './SafeMath.sol';
 import './Ownable.sol';
 
 /**
- * title Social Benefit Coin initial distribution
+ * Social Benefit Coin initial distribution
  *
- * dev Distribute community, airdrop, advisor, reserve, and founder coins
+ * Distribute community, airdrop, advisor, reserve, and founder coins
  */
 contract SBCDistribution is Ownable {
   using SafeMath for uint256;
@@ -16,17 +16,18 @@ contract SBCDistribution is Ownable {
   SBCoin public SBC;
 
   uint256 private constant decimalFactor = 10**uint256(18);
-  enum AllocationType { COMMUNITY, FOUNDER, AIRDROP, ADVISOR, RESERVE, BONUS1, BONUS2, BONUS3 }
-  uint256 public constant INITIAL_SUPPLY   = 198000000 * decimalFactor;
-  uint256 public AVAILABLE_TOTAL_SUPPLY    = 198000000 * decimalFactor;
+  enum AllocationType { COMMUNITY, WIRDPBC, FOUNDER, GAME, ADVISOR, RESERVE, BONUS1, BONUS2, BONUS3 }
+  uint256 public constant INITIAL_SUPPLY   =  198000000 * decimalFactor;
+  uint256 public AVAILABLE_TOTAL_SUPPLY    =  198000000 * decimalFactor;
   uint256 public AVAILABLE_COMMUNITY_SUPPLY  =  80000000 * decimalFactor; // 33% Released at CD +1 year -> 100% at CD +3 years
-  uint256 public AVAILABLE_FOUNDER_SUPPLY  =  17000000 * decimalFactor; // 33% Released at CD +1 year -> 100% at CD +3 years
-  uint256 public AVAILABLE_AIRDROP_SUPPLY  =   10000000 * decimalFactor; // 100% Released at CD
-  uint256 public AVAILABLE_ADVISOR_SUPPLY  =   5000000 * decimalFactor; // 100% Released at CD +7 months
+  uint256 public AVAILABLE_WIRDPBC_SUPPLY  =  12000000 * decimalFactor; // 33% Released at CD +1 year -> 100% at CD +3 years
+  uint256 public AVAILABLE_FOUNDER_SUPPLY  =  11000000 * decimalFactor; // 33% Released at CD +1 year -> 100% at CD +3 years
+  uint256 public AVAILABLE_GAME_SUPPLY  =  10000000 * decimalFactor; // 100% Released at CD
+  uint256 public AVAILABLE_ADVISOR_SUPPLY  =  2500000 * decimalFactor; // 33% Released at CD +1 year -> 100% at CD +3 years
   uint256 public AVAILABLE_RESERVE_SUPPLY  =  71000000 * decimalFactor; // 6.8% Released at CD +100 days -> 100% at CD +4 years
-  uint256 public AVAILABLE_BONUS1_SUPPLY  =    5000000 * decimalFactor; // 100% Released at CD +1 year
-  uint256 public AVAILABLE_BONUS2_SUPPLY  =     5000000 * decimalFactor; // 100% Released at CD +2 years
-  uint256 public AVAILABLE_BONUS3_SUPPLY  =    5000000 * decimalFactor; // 100% Released at CD +3 years
+  uint256 public AVAILABLE_BONUS1_SUPPLY  =    4000000 * decimalFactor; // 100% Released at CD +1 year
+  uint256 public AVAILABLE_BONUS2_SUPPLY  =     4000000 * decimalFactor; // 100% Released at CD +2 years
+  uint256 public AVAILABLE_BONUS3_SUPPLY  =    4000000 * decimalFactor; // 100% Released at CD +3 years
 
   uint256 public grandTotalClaimed = 0;
   uint256 public startTime;
@@ -44,7 +45,7 @@ contract SBCDistribution is Ownable {
   // List of admins
   mapping (address => bool) public airdropAdmins;
 
-  // Keeps track of whether or not a 200 SBC airdrop has been made to a particular address
+  // Keeps track of whether or not a 200 SBC game airdrop has been made to a particular address
   mapping (address => bool) public airdrops;
 
   modifier onlyOwnerOrAdmin() {
@@ -61,7 +62,7 @@ contract SBCDistribution is Ownable {
     */
   function SBCDistribution(uint256 _startTime) public {
     require(_startTime >= now);
-    require(AVAILABLE_TOTAL_SUPPLY == AVAILABLE_COMMUNITY_SUPPLY.add(AVAILABLE_FOUNDER_SUPPLY).add(AVAILABLE_AIRDROP_SUPPLY).add(AVAILABLE_ADVISOR_SUPPLY).add(AVAILABLE_BONUS1_SUPPLY).add(AVAILABLE_BONUS2_SUPPLY).add(AVAILABLE_BONUS3_SUPPLY).add(AVAILABLE_RESERVE_SUPPLY));
+    require(AVAILABLE_TOTAL_SUPPLY == AVAILABLE_COMMUNITY_SUPPLY.add(WIRDPBC_SUPPLY).add(AVAILABLE_FOUNDER_SUPPLY).add(AVAILABLE_GAME_SUPPLY).add(AVAILABLE_ADVISOR_SUPPLY).add(AVAILABLE_RESERVE_SUPPLY).add(AVAILABLE_BONUS1_SUPPLY).add(AVAILABLE_BONUS2_SUPPLY).add(AVAILABLE_BONUS3_SUPPLY));
     startTime = _startTime;
     SBC = new SBCoin(this);
   }
@@ -79,24 +80,39 @@ contract SBCDistribution is Ownable {
     if (_supply == AllocationType.COMMUNITY) {
       AVAILABLE_COMMUNITY_SUPPLY = AVAILABLE_COMMUNITY_SUPPLY.sub(_totalAllocated);
       allocations[_recipient] = Allocation(uint8(AllocationType.COMMUNITY), startTime + 1 years, startTime + 3 years, _totalAllocated, 0);
+
+    } else if (_supply == AllocationType.WIRDPBC) {
+        AVAILABLE_WIRDPBC_SUPPLY = AVAILABLE_WIRDPBC_SUPPLY.sub(_totalAllocated);
+        allocations[_recipient] = Allocation(uint8(AllocationType.WIRDPBC), startTime + 1 years, startTime + 3 years, _totalAllocated, 0);
+
     } else if (_supply == AllocationType.FOUNDER) {
       AVAILABLE_FOUNDER_SUPPLY = AVAILABLE_FOUNDER_SUPPLY.sub(_totalAllocated);
       allocations[_recipient] = Allocation(uint8(AllocationType.FOUNDER), startTime + 1 years, startTime + 3 years, _totalAllocated, 0);
+
+      } else if (_supply == AllocationType.ADVISOR) {
+        AVAILABLE_GAME_SUPPLY = AVAILABLE_GAME_SUPPLY.sub(_totalAllocated);
+        allocations[_recipient] = Allocation(uint8(AllocationType.GAME), startTime + 209 days, 0, _totalAllocated, 0);
+
     } else if (_supply == AllocationType.ADVISOR) {
       AVAILABLE_ADVISOR_SUPPLY = AVAILABLE_ADVISOR_SUPPLY.sub(_totalAllocated);
-      allocations[_recipient] = Allocation(uint8(AllocationType.ADVISOR), startTime + 209 days, 0, _totalAllocated, 0);
+      allocations[_recipient] = Allocation(uint8(AllocationType.ADVISOR), startTime + 1 years, startTime + 3 years, _totalAllocated, 0);
+
     } else if (_supply == AllocationType.RESERVE) {
       AVAILABLE_RESERVE_SUPPLY = AVAILABLE_RESERVE_SUPPLY.sub(_totalAllocated);
       allocations[_recipient] = Allocation(uint8(AllocationType.RESERVE), startTime + 100 days, startTime + 4 years, _totalAllocated, 0);
+
     } else if (_supply == AllocationType.BONUS1) {
       AVAILABLE_BONUS1_SUPPLY = AVAILABLE_BONUS1_SUPPLY.sub(_totalAllocated);
       allocations[_recipient] = Allocation(uint8(AllocationType.BONUS1), startTime + 1 years, startTime + 1 years, _totalAllocated, 0);
+
     } else if (_supply == AllocationType.BONUS2) {
       AVAILABLE_BONUS2_SUPPLY = AVAILABLE_BONUS2_SUPPLY.sub(_totalAllocated);
       allocations[_recipient] = Allocation(uint8(AllocationType.BONUS2), startTime + 2 years, startTime + 2 years, _totalAllocated, 0);
+
     } else if (_supply == AllocationType.BONUS3) {
       AVAILABLE_BONUS3_SUPPLY = AVAILABLE_BONUS3_SUPPLY.sub(_totalAllocated);
       allocations[_recipient] = Allocation(uint8(AllocationType.BONUS3), startTime + 3 years, startTime + 3 years, _totalAllocated, 0);
+
     }
     AVAILABLE_TOTAL_SUPPLY = AVAILABLE_TOTAL_SUPPLY.sub(_totalAllocated);
     LogNewAllocation(_recipient, _supply, _totalAllocated, grandTotalAllocated());
