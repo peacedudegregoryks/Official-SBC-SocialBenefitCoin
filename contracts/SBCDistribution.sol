@@ -6,9 +6,9 @@ import './SafeMath.sol';
 import './Ownable.sol';
 
 /**
- * Social Benefit Coin initial distribution
+ * Social Benefit Coin airdrop distribution
  *
- * Distribute community, airdrop, advisor, reserve, and founder coins
+ * Distribute community, wirdpbc, founder, game, advisor, reserve, and bonus coins
  */
 contract SBCDistribution is Ownable {
   using SafeMath for uint256;
