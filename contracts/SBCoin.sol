@@ -1,6 +1,7 @@
 pragma solidity ^0.4.23;
 
-import './interfaces/ERC20.sol';
+import "./BasicToken.sol";
+import "./ERC20.sol";
 import "../../math/SafeMath.sol";
 
 /**
@@ -8,6 +9,7 @@ import "../../math/SafeMath.sol";
  *
  * dev Implementation of the basic standard token.
  * dev https://github.com/ethereum/EIPs/issues/20
+ *@dev Based on code by FirstBlood: https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
  */
 contract SBCoin is ERC20 {
   using SafeMath for uint256;
@@ -75,7 +77,14 @@ contract SBCoin is ERC20 {
    * param _to address The address which you want to transfer to
    * param _value uint256 the amount of coins to be transferred
    */
-  function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+  function transferFrom(
+  address _from, 
+  address _to, 
+  uint256 _value
+  ) 
+  public 
+  returns (bool) 
+  {
     require(_to != address(0));
     require(_value <= balances[_from]);
     require(_value <= allowed[_from][msg.sender]);
