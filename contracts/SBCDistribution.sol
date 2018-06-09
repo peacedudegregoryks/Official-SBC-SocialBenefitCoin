@@ -176,7 +176,7 @@ contract SBCDistribution is Ownable {
   // Allow transfer of accidentally sent ERC20 (tokens)coins
   function refundTokens(address _recipient, address _token) public onlyOwner {
     require(_token != address(SBC));
-    IERC20 token = IERC20(_token);
+    ERC20 token = ERC20(_token);
     uint256 balance = token.balanceOf(this);
     require(token.transfer(_recipient, balance));
   }
