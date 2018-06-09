@@ -1,7 +1,7 @@
 pragma solidity ^0.4.23;
 
 import './interfaces/ERC20.sol';
-import './SafeMath.sol';
+import "../../math/SafeMath.sol";
 
 /**
  * title Standard ERC20 token
@@ -9,7 +9,7 @@ import './SafeMath.sol';
  * dev Implementation of the basic standard token.
  * dev https://github.com/ethereum/EIPs/issues/20
  */
-contract SBCoin is IERC20 {
+contract SBCoin is ERC20 {
   using SafeMath for uint256;
 
   // Social Benefit Coin parameters
