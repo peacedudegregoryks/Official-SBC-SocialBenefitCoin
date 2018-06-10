@@ -7,18 +7,22 @@ set -o errexit
 trap cleanup EXIT
 
 cleanup() {
-  # Kill the testrpc instance that we started (if we started one and if it's still running).
-  if [ -n "$testrpc_pid" ] && ps -p $testrpc_pid > /dev/null; then
-    kill -9 $testrpc_pid
+   # Kill the ganache instance that we started (if we started one and if it's still running).
+  if [ -n "$ganache_pid" ] && ps -p $ganache_pid > /dev/null; then
+    kill -9 $ganache_pid
   fi
 }
+if [ "$SOLIDITY_COVERAGE" = true ]; then
+  ganache_port=8555
+else
+  ganache_port=8545
+fi
 
-
-testrpc_running() {
-  nc -z localhost "$testrpc_port"
+ganache_running() {
+  nc -z localhost "$ganache_port"
 }
 
-start_testrpc() {
+start_ganache() {
   # We define 10 accounts with balance 1M ether, needed for high-value tests.
   local accounts=(
     --account="35e6f2d0967f19296cf0a44c9f861e5df1f134efc93e669c7ac1b7894efe13fa,1000000000000000000000000"
@@ -32,16 +36,21 @@ start_testrpc() {
     --account="ea8b7c7e31f3a47c0a73c909d833df8af0dce80e5ee533b8c88d0fc20da82836,1000000000000000000000000"
     --account="e33ff69f6a56f8da592bbc4eed72de6f967d391ad230f4f9f6c7b0de3ea7377e,1000000000000000000000000"
   )
+  if [ "$SOLIDITY_COVERAGE" = true ]; then
+    node_modules/.bin/testrpc-sc --gasLimit 0xfffffffffff --port "$ganache_port" "${accounts[@]}" > /dev/null &
+  else
+    node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff "${accounts[@]}" > /dev/null &
+  fi
+
+  ganache_pid=$!
 }
 
-if testrpc_running; then
-  echo "Using existing testrpc instance"
+if ganache_running; then
+  echo "Using existing ganache instance"
 else
-  echo "Starting our own testrpc instance"
-  start_testrpc
-
-  webpack && run-s babel:src babel:test
-  run-s truffle:compile copy-artifacts
-  truffle migrate --network=testrpc
-  mocha lib/test/**/*_test.js --timeout 10000 --bail --exit
+  echo "Starting our own ganache instance"
+  start_ganache
 fi
+
+
+node_modules/.bin/truffle test "$@"
