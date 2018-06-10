@@ -75,7 +75,7 @@ contract SBCDistribution is Ownable {
     */
   function setAllocation (address _recipient, uint256 _totalAllocated, AllocationType _supply) onlyOwner public {
     require(allocations[_recipient].totalAllocated == 0 && _totalAllocated > 0);
-    require(_supply >= AllocationType.COMMUNITY && _supply <= AllocationType.BONUS3);
+    require(_supply >= AllocationType.COMMUNITY && _supply <= AllocationType.COMMUNITY);
     require(_recipient != address(0));
     if (_supply == AllocationType.COMMUNITY) {
       AVAILABLE_COMMUNITY_SUPPLY = AVAILABLE_COMMUNITY_SUPPLY.sub(_totalAllocated);
