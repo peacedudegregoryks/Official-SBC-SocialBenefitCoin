@@ -50,7 +50,11 @@ if ganache_running; then
 else
   echo "Starting our own ganache instance"
   start_ganache
+  
+  webpack && run-s babel:src babel:test
+  run-s truffle:compile copy-artifacts
+  truffle migrate --network=ganache
+  mocha lib/test/**/*_test.js --timeout 10000 --bail --exit
 fi
-
 
 node_modules/.bin/truffle test "$@"
