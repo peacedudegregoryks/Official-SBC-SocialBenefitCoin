@@ -22,7 +22,7 @@ contract SBCDistribution is Ownable {
   uint256 public AVAILABLE_COMMUNITY_SUPPLY  =  80000000 * decimalFactor; // 33% Released at CD +1 year -> 100% at CD +3 years
   uint256 public AVAILABLE_WIRDPBC_SUPPLY  =  12000000 * decimalFactor; // 33% Released at CD +1 year -> 100% at CD +3 years
   uint256 public AVAILABLE_FOUNDER_SUPPLY  =  11000000 * decimalFactor; // 33% Released at CD +1 year -> 100% at CD +3 years
-  uint256 public AVAILABLE_GAME_SUPPLY  =  10000000 * decimalFactor; // 100% Released at CD
+  uint256 public AVAILABLE_GAMEAIRDROP_SUPPLY  =  10000000 * decimalFactor; // 100% Released at CD
   uint256 public AVAILABLE_ADVISOR_SUPPLY  =  2500000 * decimalFactor; // 33% Released at CD +1 year -> 100% at CD +3 years
   uint256 public AVAILABLE_RESERVE_SUPPLY  =  71000000 * decimalFactor; // 6.8% Released at CD +100 days -> 100% at CD +4 years
   uint256 public AVAILABLE_BONUS1_SUPPLY  =    4000000 * decimalFactor; // 100% Released at CD +1 year
@@ -62,7 +62,7 @@ contract SBCDistribution is Ownable {
     */
   function SBCDistribution(uint256 _startTime) public {
     require(_startTime >= now);
-    require(AVAILABLE_TOTAL_SUPPLY == AVAILABLE_COMMUNITY_SUPPLY.add(WIRDPBC_SUPPLY).add(AVAILABLE_FOUNDER_SUPPLY).add(AVAILABLE_GAME_SUPPLY).add(AVAILABLE_ADVISOR_SUPPLY).add(AVAILABLE_RESERVE_SUPPLY).add(AVAILABLE_BONUS1_SUPPLY).add(AVAILABLE_BONUS2_SUPPLY).add(AVAILABLE_BONUS3_SUPPLY));
+    require(AVAILABLE_TOTAL_SUPPLY == AVAILABLE_COMMUNITY_SUPPLY.add(WIRDPBC_SUPPLY).add(AVAILABLE_FOUNDER_SUPPLY).add(AVAILABLE_GAMEAIRDROP_SUPPLY).add(AVAILABLE_ADVISOR_SUPPLY).add(AVAILABLE_RESERVE_SUPPLY).add(AVAILABLE_BONUS1_SUPPLY).add(AVAILABLE_BONUS2_SUPPLY).add(AVAILABLE_BONUS3_SUPPLY));
     startTime = _startTime;
     SBC = new SBCoin(this);
   }
@@ -126,7 +126,7 @@ contract SBCDistribution is Ownable {
   }
 
   /**
-    * dev perform a transfer of allocations
+    * dev perform a transfer of SBC Game airdrop allocations
     * param _recipient is a list of recipients
     */
   function airdropcoins(address[] _recipient) public onlyOwnerOrAdmin {
@@ -140,7 +140,7 @@ contract SBCDistribution is Ownable {
           airdropped = airdropped.add(200 * decimalFactor);
         }
     }
-    AVAILABLE_AIRDROP_SUPPLY = AVAILABLE_AIRDROP_SUPPLY.sub(airdropped);
+    AVAILABLE_GAMEAIRDROP_SUPPLY = AVAILABLE_GAMEAIRDROP_SUPPLY.sub(airdropped);
     AVAILABLE_TOTAL_SUPPLY = AVAILABLE_TOTAL_SUPPLY.sub(airdropped);
     grandTotalClaimed = grandTotalClaimed.add(airdropped);
   }
