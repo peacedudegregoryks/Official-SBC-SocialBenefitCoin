@@ -3,7 +3,7 @@ const Web3 = require('web3')
 
 var BigNumber = require('bignumber.js')
 
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545")) // Hardcoded development port
+const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545")) // Hardcoded dev port
 
 const logTitle = function (title) {
   console.log("*****************************************");
