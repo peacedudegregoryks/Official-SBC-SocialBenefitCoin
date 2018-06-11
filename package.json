@@ -1,7 +1,7 @@
 {
   "name": "sbc-coin-distribution",
-  "version": "0.0.1",
-  "description": "Ethereum smart contracts for the SBC coin distribution",
+  "version": "1.0.0",
+  "description": "Ethereum smart contracts SBC coin distribution",
   "main": "index.js",
   "directories": {
     "test": "test"
