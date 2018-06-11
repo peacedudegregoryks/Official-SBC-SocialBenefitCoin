@@ -90,7 +90,7 @@ contract SBCDistribution is Ownable {
       allocations[_recipient] = Allocation(uint8(AllocationType.FOUNDER), startTime + 1 years, startTime + 3 years, _totalAllocated, 0);
 
       } else if (_supply == AllocationType.ADVISOR) {
-        AVAILABLE_GAME_SUPPLY = AVAILABLE_GAME_SUPPLY.sub(_totalAllocated);
+        AVAILABLE_GAMEAIRDROP_SUPPLY = AVAILABLE_GAMEAIRDROP_SUPPLY.sub(_totalAllocated);
         allocations[_recipient] = Allocation(uint8(AllocationType.GAME), startTime + 90 days, 0, _totalAllocated, 0);
 
     } else if (_supply == AllocationType.ADVISOR) {
