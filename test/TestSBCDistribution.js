@@ -57,11 +57,11 @@ contract('SBCDistribution', function(accounts) {
 
   let account_owner     = accounts[0];
   let account_community = accounts[1];
-  let account_founder1  = accounts[2];
-  let account_founder2  = accounts[3];
-  let account_bonus1    = accounts[6];
-  let account_advisor1  = accounts[7];
-  let account_advisor2  = accounts[8];
+  let account_wirdpbc   = accounts[2];
+  let account_founder   = accounts[3];
+  let account_game      = accounts[6];
+  let account_advisors  = accounts[7];
+  let account_bonus     = accounts[8];
   let account_reserve   = accounts[9];
 
   let account_admin1  = accounts[4];
@@ -178,7 +178,7 @@ contract('SBCDistribution', function(accounts) {
           newCommunitySupply = await sbcDistribution.AVAILABLE_FOUNDER_SUPPLY({from:account_owner});
           break;
         case "ADVISOR":
-          newCommunitySupplyresaleSupply = await sbcDistribution.AVAILABLE_ADVISOR_SUPPLY({from:account_owner});
+          newCommunitySupply = await sbcDistribution.AVAILABLE_ADVISOR_SUPPLY({from:account_owner});
           break;
         case "RESERVE":
           newCommunitySupply = await sbcDistribution.AVAILABLE_RESERVE_SUPPLY({from:account_owner});
@@ -238,7 +238,7 @@ contract('SBCDistribution', function(accounts) {
       describe("COMMUNITY Allocation", async function () {
 
         let tokensToAllocate = 1000;
-        doAllocationTests("COMMUNITY",tokensToAllocate,account_presale);
+        doAllocationTests("COMMUNITY",tokensToAllocate,account_community);
 
         after(async() => {
           oldTotalSupply = new BigNumber(oldTotalSupply.minus(tokensToAllocate));
@@ -359,7 +359,7 @@ contract('SBCDistribution', function(accounts) {
 
         it("should reject invalid allocation", async function () {
           try {
-            await sbcDistribution.setAllocation(account_advisor1,0,0,{from:account_owner});
+            await sbcDistribution.setAllocation(account_advisor2,0,0,{from:account_owner});
           } catch (error) {
               logError("✅   Rejected invalid allocation ");
               return true;
@@ -369,7 +369,7 @@ contract('SBCDistribution', function(accounts) {
 
         it("should reject repeated allocations", async function () {
           try {
-            await sbcDistribution.setAllocation(account_presale,1000,0,{from:account_owner});
+            await sbcDistribution.setAllocation(account_community,1000,0,{from:account_owner});
           } catch (error) {
               logError("✅   Rejected repeated allocations ");
               return true;
@@ -404,9 +404,9 @@ contract('SBCDistribution', function(accounts) {
           let new_tokenBalance = await sbCoin.balanceOf(account_presale,{from:accounts[0]});
 
           //COMMUNITY coins.
-          let allocation = await sbcDistribution.allocations(account_presale,{from:account_owner});
+          let allocation = await sbcDistribution.allocations(account_community,{from:account_owner});
 
-          logWithdrawalData("COMMUNITY",currentBlock.timestamp,account_presale,contractStartTime,allocation,new_tokenBalance);
+          logWithdrawalData("COMMUNITY",currentBlock.timestamp,account_community,contractStartTime,allocation,new_tokenBalance);
 
           let expectedTokenBalance = calculateExpectedTokens(allocation,currentBlock.timestamp,contractStartTime);
           assert.equal(expectedTokenBalance.toString(10),new_tokenBalance.toString(10));
@@ -517,7 +517,7 @@ contract('SBCDistribution', function(accounts) {
           await sbcDistribution.transferTokens(account_reserve,{from:accounts[0]});
           let new_tokenBalance = await sbCoin.balanceOf(account_reserve,{from:accounts[0]});
 
-          //PRESALE tokens are completely distributed once allocated as they have no vesting period nor cliff
+          //COMMUNITY coins have a vesting period 
           let allocation = await sbcDistribution.allocations(account_reserve,{from:account_owner});
 
           logWithdrawalData("RESERVE",currentBlock.timestamp,account_reserve,contractStartTime,allocation,new_tokenBalance);
