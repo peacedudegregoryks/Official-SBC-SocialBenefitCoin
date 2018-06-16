@@ -1,6 +1,6 @@
 # The Social Benefit Coin Smart contract
  
-Was written by Gregory Kennedy(Salemi), well actually I had help, I combined the best code from the best most secure open source projects I love and played with it.  
+Was written by Gregory Kennedy(Salemi), well actually I had help, I combined the best code from the best most secure open source projects I love and played with it, still playing with it today June 15th, some ajv issues.  
 
 # Social Benefit Coin Smart contract gratitude.
 
